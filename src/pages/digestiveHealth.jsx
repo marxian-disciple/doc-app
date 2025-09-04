@@ -5,6 +5,8 @@ import {
   Calendar, Upload, Stethoscope, FileText, ShieldCheck,
   Utensils, Pill, HeartPulse, Phone, Mail, Lock, Search
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,6 +55,7 @@ function BookingForm({ onChange }) {
 
   return (
     <div className="grid gap-3">
+        
       <Label className="text-teal-700">Full name</Label>
       <Input className="border-teal-200 focus:border-teal-600 focus:ring-teal-600" value={form.fullname} onChange={(e) => updateField("fullname", e.target.value)} />
       <Label className="text-teal-700">Email</Label>
@@ -150,6 +153,9 @@ function BookingAndRecords() {
 export default function DigestiveHealthPage() {
   return (
     <ScrollArea className="h-screen w-full bg-teal-50">
+        <Link to="/" className="inline-flex items-center mb-6 text-teal-600 hover:text-teal-800 transition-colors">
+<ArrowLeft className="mr-2 w-4 h-4" /> Back to Home
+</Link>
       <div className="max-w-6xl mx-auto px-4 py-10">
         <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-3xl font-bold mb-6 text-teal-700">
           Digestive System Health

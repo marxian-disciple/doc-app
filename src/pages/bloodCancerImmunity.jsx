@@ -28,6 +28,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 // --- Helper: simple section wrapper
 const Section = ({ id, title, subtitle, children, icon: Icon }) => (
@@ -55,6 +57,9 @@ export default function BloodCancerImmunityPage() {
     <div className="min-h-screen bg-gradient-to-b from-rose-50 via-pink-50 to-red-50 text-foreground">
       {/* Hero */}
       <div className="border-b bg-gradient-to-r from-red-600 via-rose-500 to-pink-500 text-white">
+            <Link to="/" className="inline-flex items-center mb-6 text-white/80 hover:text-white transition-colors">
+            <ArrowLeft className="mr-2 w-4 h-4" /> Back to Home
+            </Link>
         <div className="max-w-6xl mx-auto px-4 py-10 md:py-16">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
