@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { Heart, Brain, Stethoscope, Calendar, Shield, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-medical.jpg";
+import heroImage from "../assets/hero-medical.jpg";
 
 const Hero = () => {
   return (

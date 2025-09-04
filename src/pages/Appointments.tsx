@@ -2,8 +2,6 @@ import { useAuth } from '../hooks/useAuth';
 import { useAppointments } from '../hooks/useAppointments';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Calendar, Clock, User, MapPin, ArrowLeft, AlertCircle } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -30,25 +28,25 @@ const Appointments = () => {
 
   const isDoctor = profile?.user_type === 'doctor';
 
-  const handleCancelAppointment = async (appointmentId: string) => {
+  const handleCancelAppointment = async (appointmentId) => {
     try {
       await cancelAppointment(appointmentId);
       toast.success('Appointment cancelled successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to cancel appointment');
     }
   };
 
-  const handleConfirmAppointment = async (appointmentId: string) => {
+  const handleConfirmAppointment = async (appointmentId) => {
     try {
       await confirmAppointment(appointmentId);
       toast.success('Appointment confirmed successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to confirm appointment');
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'confirmed':
         return 'bg-green-100 text-green-800';
@@ -93,7 +91,6 @@ const Appointments = () => {
           </Button>
         </div>
 
-        {/* Error Display */}
         {error && (
           <Card className="mb-6 border-red-200 bg-red-50">
             <CardContent className="pt-6">
