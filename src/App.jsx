@@ -17,6 +17,9 @@ import SkinHairAppearance from "./pages/skin";
 import HormonesMetabolism from "./pages/hormones";
 import TeethAndMouth from "./pages/teeth";
 import NotFound from "./pages/NotFound";
+import Doctors from "./pages/Doctors";
+import Appointments from "./pages/Appointments";
+import MedicalRecords from "./pages/MedicalRecords";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +42,9 @@ const App = () => (
             <Route path="/skin" element={<SkinHairAppearance />} />
             <Route path="/hormones" element={<HormonesMetabolism />} />
             <Route path="/teeth" element={<TeethAndMouth />} />
+            <Route path="/doctors" element={<Doctors />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/medical-records" element={<MedicalRecords />} />
             {/* catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
