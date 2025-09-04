@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Stethoscope, Users } from "lucide-react";
-import AuthModal from "@/components/AuthModal";
+import AuthModal from "../components/AuthModal";
 
 const Auth = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);

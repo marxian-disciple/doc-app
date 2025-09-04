@@ -1,4 +1,3 @@
-import { supabase } from '@/integrations/supabase/client';
 
 export const testSupabaseConnection = async () => {
   try {

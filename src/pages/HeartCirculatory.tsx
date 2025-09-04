@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Heart, Activity, Zap, Shield, TrendingUp, User, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import cardiologyImage from "@/assets/cardiology.jpg";
+import cardiologyImage from "../assets/cardiology.jpg";
 
 const HeartCirculatory = () => {
   return (

@@ -1,4 +1,3 @@
-import { supabase } from '@/integrations/supabase/client';
 
 // This is a utility function to add sample data for testing
 // Only use this in development/testing environments

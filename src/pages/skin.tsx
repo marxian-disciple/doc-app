@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Sparkles, Scissors, Droplets, Heart, User, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import skinImage from "@/assets/skin.jpg"; 
+import skinImage from "../assets/skin.jpg"; 
 
 const SkinHairAppearance = () => {
   return (

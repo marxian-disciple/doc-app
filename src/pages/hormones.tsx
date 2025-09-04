@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Activity, Flame, Droplets, HeartPulse, Shield, User, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import hormonesImage from "@/assets/hormones.jpg";
+import hormonesImage from "../assets/hormones.jpg";
 
 const HormonesMetabolism = () => {
   return (

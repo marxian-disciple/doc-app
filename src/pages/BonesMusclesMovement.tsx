@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Bone, Dumbbell, Zap, Shield, Activity, User, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import orthopedicsImage from "@/assets/orthopedics.jpg";
+import orthopedicsImage from "../assets/orthopedics.jpg";
 
 const BonesMusclesMovement = () => {
   return (

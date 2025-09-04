@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Hero from "@/components/Hero";
-import MedicalCategories from "@/components/MedicalCategories";
-import UserTypeSelection from "@/components/UserTypeSelection";
-import AuthModal from "@/components/AuthModal";
-import { useAuth } from "@/hooks/useAuth";
+import Hero from "../components/Hero";
+import MedicalCategories from "../components/MedicalCategories";
+import UserTypeSelection from "../components/UserTypeSelection";
+import AuthModal from "../components/AuthModal";
+import { useAuth } from "../hooks/useAuth";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);

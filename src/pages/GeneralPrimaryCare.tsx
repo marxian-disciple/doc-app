@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Clock, MapPin, Phone, Star, User, Stethoscope, Heart, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
-import generalCareImage from "@/assets/general-care.jpg";
+import generalCareImage from "../assets/general-care.jpg";
 
 const GeneralPrimaryCare = () => {
   return (

@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Brain, Heart, Users, Shield, MessageCircle, User, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import mentalHealthImage from "@/assets/mental-health.jpg";
+import mentalHealthImage from "../assets/mental-health.jpg";
 
 const MindBehavior = () => {
   return (

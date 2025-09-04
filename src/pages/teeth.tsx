@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
 import { ArrowLeft, Calendar, Smile, Droplets, Heart, User, Star, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
-import teethImage from "@/assets/teeth.jpg"; 
+import teethImage from "../assets/teeth.jpg"; 
 
 const TeethAndMouth = () => {
   return (

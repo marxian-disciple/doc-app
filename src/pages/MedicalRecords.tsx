@@ -1,9 +1,9 @@
-import { useAuth } from '@/hooks/useAuth';
-import { useMedicalRecords } from '@/hooks/useMedicalRecords';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '../hooks/useAuth';
+import { useMedicalRecords } from '../hooks/useMedicalRecords';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { FileText, Calendar, User, Stethoscope, ArrowLeft, Download, Eye, AlertCircle } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
