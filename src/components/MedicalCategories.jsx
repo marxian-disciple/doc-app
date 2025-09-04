@@ -50,36 +50,36 @@ const medicalCategories = [
     path: "/bones-muscles-movement"
   },
   {
-    id: "reproductive",
+    id: "WomensHealth",
     name: "Reproduction and Women's Health",
     icon: Baby,
     color: "bg-medical-reproductive",
     gradient: "bg-gradient-to-br from-pink-400 to-pink-600",
-    path: "/reproductive"
+    path: "/WomensHealth"
   },
   {
-    id: "digestive",
+    id: "digestiveHealth",
     name: "Digestive System",
     icon: Activity,
     color: "bg-medical-digestive",
     gradient: "bg-gradient-to-br from-green-400 to-green-600",
-    path: "/digestive"
+    path: "/digestiveHealth"
   },
   {
-    id: "lungs",
+    id: "Lungs",
     name: "Lungs and Breathing",
     icon: Wind,
     color: "bg-medical-lungs",
     gradient: "bg-gradient-to-br from-cyan-400 to-cyan-600",
-    path: "/lungs"
+    path: "/Lungs"
   },
   {
-    id: "blood",
+    id: "bloodCancerImmunity",
     name: "Blood, Cancer, and Immunity",
     icon: Droplet,
     color: "bg-medical-blood",
     gradient: "bg-gradient-to-br from-red-500 to-red-700",
-    path: "/blood"
+    path: "/bloodCancerImmunity"
   },
   {
     id: "eyes",
