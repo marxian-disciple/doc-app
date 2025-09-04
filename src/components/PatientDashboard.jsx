@@ -25,7 +25,14 @@ const PatientDashboard = () => {
               <User className="w-4 h-4" />
               <span>Patient Portal</span>
             </div>
-            <Button variant="outline" size="sm" onClick={signOut}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                await signOut(); // signs the user out
+                navigate('/');    // optional: redirect to login/home page
+              }}
+            >
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
