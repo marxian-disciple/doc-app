@@ -17,6 +17,10 @@ import SkinHairAppearance from "./pages/skin";
 import HormonesMetabolism from "./pages/hormones";
 import TeethAndMouth from "./pages/teeth";
 import NotFound from "./pages/NotFound";
+import WomensHealth from "./pages/WomensHealth";
+import LungsAndBreathing from "./pages/Lungs";
+import DigestiveHealthPage from "./pages/digestiveHealth";
+import BloodCancerImmunityPage from "./pages/bloodCancerImmunity";
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
 import MedicalRecords from "./pages/MedicalRecords";
@@ -47,6 +51,10 @@ const App = () => (
             <Route path="/medical-records" element={<MedicalRecords />} />
             {/* catch-all */}
             <Route path="*" element={<NotFound />} />
+            <Route path="/WomensHealth" element={<WomensHealth />} />
+            <Route path="/Lungs" element={<LungsAndBreathing />} />
+            <Route path="/digestiveHealth" element={<DigestiveHealthPage />} /> 
+            <Route path="/bloodCancerImmunity" element={<BloodCancerImmunityPage />} /> 
           </Routes>
         </BrowserRouter>
       </AuthProvider>
