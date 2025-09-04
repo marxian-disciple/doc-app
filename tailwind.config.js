@@ -1,0 +1,135 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
+	"./index.html",
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          light: "hsl(var(--primary-light))",
+          lighter: "hsl(var(--primary-lighter))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        medical: {
+          heart: "hsl(var(--medical-heart))",
+          mind: "hsl(var(--medical-mind))",
+          general: "hsl(var(--medical-general))",
+          bones: "hsl(var(--medical-bones))",
+          reproductive: "hsl(var(--medical-reproductive))",
+          digestive: "hsl(var(--medical-digestive))",
+          lungs: "hsl(var(--medical-lungs))",
+          blood: "hsl(var(--medical-blood))",
+          eyes: "hsl(var(--medical-eyes))",
+          skin: "hsl(var(--medical-skin))",
+          hormones: "hsl(var(--medical-hormones))",
+          teeth: "hsl(var(--medical-teeth))",
+          other: "hsl(var(--medical-other))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
+      },
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-heart": "var(--gradient-heart)",
+        "gradient-mind": "var(--gradient-mind)",
+        "gradient-general": "var(--gradient-general)",
+        "gradient-bones": "var(--gradient-bones)",
+        "gradient-reproductive": "var(--gradient-reproductive)",
+        "gradient-digestive": "var(--gradient-digestive)",
+        "gradient-lungs": "var(--gradient-lungs)",
+        "gradient-blood": "var(--gradient-blood)",
+        "gradient-eyes": "var(--gradient-eyes)",
+        "gradient-skin": "var(--gradient-skin)",
+        "gradient-hormones": "var(--gradient-hormones)",
+        "gradient-teeth": "var(--gradient-teeth)",
+        "gradient-other": "var(--gradient-other)",
+        "gradient-hero": "var(--gradient-hero)",
+      },
+      boxShadow: {
+        medical: "var(--shadow-medical)",
+        card: "var(--shadow-card)",
+        button: "var(--shadow-button)",
+      },
+      transitionTimingFunction: {
+        smooth: "var(--transition-smooth)",
+        bounce: "var(--transition-bounce)",
+        "gradient-heart": "var(--gradient-heart)",
+        "gradient-mind": "var(--gradient-mind)",
+        "gradient-general": "var(--gradient-general)",
+        "gradient-bones": "var(--gradient-bones)",
+        "gradient-primary": "var(--gradient-primary)",
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+};

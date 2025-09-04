@@ -8,7 +8,7 @@ const Auth = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [selectedUserType, setSelectedUserType] = useState<'patient' | 'doctor' | null>(null);
 
-  const handleUserTypeSelect = (type: 'patient' | 'doctor') => {
+  const handleUserTypeSelect = (type) => {
     setSelectedUserType(type);
     setAuthModalOpen(true);
   };
