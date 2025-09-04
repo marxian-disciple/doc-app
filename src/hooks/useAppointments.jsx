@@ -1,30 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
-
-export interface Appointment {
-  id: string;
-  appointment_date: string;
-  appointment_time: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  reason: string | null;
-  notes: string | null;
-  diagnosis: string | null;
-  prescription: string | null;
-  symptoms: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-  // Joined data
-  patient_name?: string;
-  doctor_name?: string;
-  specialty?: string;
-  patient_id: string;
-  doctor_id: string;
-}
+// import your Firebase client here
+// import { db } from './firebase';
 
 export const useAppointments = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const { user, profile } = useAuth();
 
   const fetchAppointments = async () => {
@@ -34,132 +16,81 @@ export const useAppointments = () => {
     setError(null);
 
     try {
-      let query = supabase // change to firebase
-        .from('appointments')
-        .select(`
-          *,
-          patients!inner(
-            id,
-            profile_id,
-            profiles!inner(
-              full_name,
-              user_type
-            )
-          ),
-          doctors!inner(
-            id,
-            specialty_category,
-            profiles!inner(
-              full_name,
-              user_type
-            )
-          )
-        `);
+      // TODO: Replace with Firebase query
+      // Example:
+      // let query = db.collection('appointments');
+      // if (profile.user_type === 'patient') query = query.where('patient_id', '==', profile.id);
+      // if (profile.user_type === 'doctor') query = query.where('doctor_id', '==', profile.id);
+      // const snapshot = await query.orderBy('appointment_date').get();
 
-      // Filter based on user type
-      if (profile.user_type === 'patient') {
-        // Patients can only see their own appointments
-        query = query.eq('patients.profile_id', profile.id);
-      } else if (profile.user_type === 'doctor') {
-        // Doctors can see appointments with their patients
-        query = query.eq('doctors.profile_id', profile.id);
-      }
+      const data = []; // Replace with transformed snapshot data from Firebase
 
-      const { data, error: fetchError } = await query.order('appointment_date', { ascending: true });
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      // Transform the data to match our interface
-      const transformedAppointments: Appointment[] = data?.map(appointment => ({
+      const transformedAppointments = data.map((appointment) => ({
         id: appointment.id,
         appointment_date: appointment.appointment_date,
         appointment_time: appointment.appointment_time,
         status: appointment.status,
-        reason: appointment.reason,
-        notes: appointment.notes,
-        diagnosis: appointment.diagnosis,
-        prescription: appointment.prescription,
-        symptoms: appointment.symptoms,
-        created_at: appointment.created_at,
-        updated_at: appointment.updated_at,
+        reason: appointment.reason || null,
+        notes: appointment.notes || null,
+        diagnosis: appointment.diagnosis || null,
+        prescription: appointment.prescription || null,
+        symptoms: appointment.symptoms || null,
+        created_at: appointment.created_at || null,
+        updated_at: appointment.updated_at || null,
         patient_id: appointment.patient_id,
         doctor_id: appointment.doctor_id,
-        patient_name: appointment.patients?.profiles?.full_name,
-        doctor_name: appointment.doctors?.profiles?.full_name,
-        specialty: appointment.doctors?.specialty_category,
-      })) || [];
+        patient_name: appointment.patient_name || null,
+        doctor_name: appointment.doctor_name || null,
+        specialty: appointment.specialty || null,
+      }));
 
       setAppointments(transformedAppointments);
     } catch (err) {
       console.error('Error fetching appointments:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch appointments');
+      setError(err.message || 'Failed to fetch appointments');
     } finally {
       setLoading(false);
     }
   };
 
-  const createAppointment = async (appointmentData: {
-    patient_id: string;
-    doctor_id: string;
-    appointment_date: string;
-    appointment_time: string;
-    reason?: string;
-    status?: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  }) => {
+  const createAppointment = async (appointmentData) => {
     try {
-      const { data, error } = await supabase // change to firebase
-        .from('appointments')
-        .insert([appointmentData])
-        .select()
-        .single();
+      // TODO: Replace with Firebase insert
+      // await db.collection('appointments').add(appointmentData);
 
-      if (error) throw error;
-
-      // Refresh the appointments list
       await fetchAppointments();
-      return data;
     } catch (err) {
       console.error('Error creating appointment:', err);
       throw err;
     }
   };
 
-  const updateAppointment = async (id: string, updates: Partial<Appointment>) => {
+  const updateAppointment = async (id, updates) => {
     try {
-      const { data, error } = await supabase // change to firebase
-        .from('appointments')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
+      // TODO: Replace with Firebase update
+      // await db.collection('appointments').doc(id).update(updates);
 
-      if (error) throw error;
-
-      // Refresh the appointments list
       await fetchAppointments();
-      return data;
     } catch (err) {
       console.error('Error updating appointment:', err);
       throw err;
     }
   };
 
-  const cancelAppointment = async (id: string) => {
+  const cancelAppointment = async (id) => {
     return updateAppointment(id, { status: 'cancelled' });
   };
 
-  const confirmAppointment = async (id: string) => {
+  const confirmAppointment = async (id) => {
     return updateAppointment(id, { status: 'confirmed' });
   };
 
-  const completeAppointment = async (id: string, diagnosis?: string, prescription?: string, notes?: string) => {
-    return updateAppointment(id, { 
+  const completeAppointment = async (id, diagnosis, prescription, notes) => {
+    return updateAppointment(id, {
       status: 'completed',
       diagnosis,
       prescription,
-      notes
+      notes,
     });
   };
 

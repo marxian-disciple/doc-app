@@ -1,12 +1,12 @@
 import { useEffect, useState, createContext, useContext } from "react";
-import { app } from "../firebase/firebase"; // your firebase config
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { app } from "../firebase/firebase";
+import { getAuth, onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null); // default to null for consistency
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null); // any extra user info
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const auth = getAuth(app);
@@ -15,24 +15,38 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        // If you have additional profile info in Firestore:
-        // fetchProfile(firebaseUser.uid).then(setProfile);
-        setProfile({ user_type: "patient" }); // default for now
+        setProfile({ user_type: "patient", full_name: firebaseUser.displayName });
       } else {
         setUser(null);
         setProfile(null);
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, [auth]);
 
+  const signOut = async () => {
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+      setProfile(null);
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// Hook must always return the same shape
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

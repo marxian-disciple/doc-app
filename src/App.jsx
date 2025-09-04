@@ -21,6 +21,9 @@ import WomensHealth from "./pages/WomensHealth";
 import LungsAndBreathing from "./pages/Lungs";
 import DigestiveHealthPage from "./pages/digestiveHealth";
 import BloodCancerImmunityPage from "./pages/bloodCancerImmunity";
+import Doctors from "./pages/Doctors";
+import Appointments from "./pages/Appointments";
+import MedicalRecords from "./pages/MedicalRecords";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +46,9 @@ const App = () => (
             <Route path="/skin" element={<SkinHairAppearance />} />
             <Route path="/hormones" element={<HormonesMetabolism />} />
             <Route path="/teeth" element={<TeethAndMouth />} />
+            <Route path="/doctors" element={<Doctors />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/medical-records" element={<MedicalRecords />} />
             {/* catch-all */}
             <Route path="*" element={<NotFound />} />
             <Route path="/WomensHealth" element={<WomensHealth />} />

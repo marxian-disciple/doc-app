@@ -1,13 +1,13 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Users, FileText, Settings, LogOut, User } from 'lucide-react';
+import { Calendar, Users, FileText, LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Hero from '@/components/Hero';
 import MedicalCategories from '@/components/MedicalCategories';
 
 const PatientDashboard = () => {
-  const { user, profile, signOut } = useAuth(); // change this to firebase
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -25,7 +25,14 @@ const PatientDashboard = () => {
               <User className="w-4 h-4" />
               <span>Patient Portal</span>
             </div>
-            <Button variant="outline" size="sm" onClick={signOut}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                await signOut(); // signs the user out
+                navigate('/');    // optional: redirect to login/home page
+              }}
+            >
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
@@ -38,6 +45,8 @@ const PatientDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          
+          {/* Appointments Card */}
           <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer"
                 onClick={() => navigate('/appointments')}>
             <CardHeader>
@@ -48,10 +57,13 @@ const PatientDashboard = () => {
               <CardDescription>View your upcoming appointments</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">View Appointments</Button>
+              <Button className="w-full" onClick={() => navigate('/appointments')}>
+                View Appointments
+              </Button>
             </CardContent>
           </Card>
 
+          {/* Doctors Card */}
           <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer"
                 onClick={() => navigate('/doctors')}>
             <CardHeader>
@@ -62,10 +74,13 @@ const PatientDashboard = () => {
               <CardDescription>Book an appointment with a specialist</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">Browse Doctors</Button>
+              <Button className="w-full" onClick={() => navigate('/doctors')}>
+                Browse Doctors
+              </Button>
             </CardContent>
           </Card>
 
+          {/* Medical Records Card */}
           <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer"
                 onClick={() => navigate('/medical-records')}>
             <CardHeader>
@@ -76,9 +91,12 @@ const PatientDashboard = () => {
               <CardDescription>Access your medical history</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">View Records</Button>
+              <Button className="w-full" onClick={() => navigate('/medical-records')}>
+                View Records
+              </Button>
             </CardContent>
           </Card>
+
         </div>
       </main>
     </div>
