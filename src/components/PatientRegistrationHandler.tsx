@@ -12,7 +12,7 @@ export const usePatientRegistrationHandler = () => {
           // Wait a bit for the profile to be created by the trigger
           await new Promise(resolve => setTimeout(resolve, 2000));
 
-          // Get the created profile
+          // Get the created profile using firebase
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('id, user_type')
@@ -27,7 +27,7 @@ export const usePatientRegistrationHandler = () => {
 
           if (profile) {
             if (metadata.user_type === 'patient' && profile.user_type === 'patient') {
-              // Create patient record
+              // Create patient record using firebase
               const { error } = await supabase
                 .from('patients')
                 .insert({
@@ -43,7 +43,7 @@ export const usePatientRegistrationHandler = () => {
                 console.log('Patient record created successfully');
               }
             } else if (metadata.user_type === 'doctor' && profile.user_type === 'doctor') {
-              // Create doctor record
+              // Create doctor record using firebase
               const { error } = await supabase
                 .from('doctors')
                 .insert({
@@ -68,8 +68,7 @@ export const usePatientRegistrationHandler = () => {
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange); //change this to firebase
     return () => subscription.unsubscribe();
   }, []);
 };

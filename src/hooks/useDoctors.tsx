@@ -37,7 +37,7 @@ export const useDoctors = () => {
     setError(null);
 
     try {
-      let query = supabase
+      let query = supabase // change to firebase
         .from('doctors')
         .select(`
           *,
@@ -98,7 +98,7 @@ export const useDoctors = () => {
 
   const getDoctorById = async (doctorId: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabase // change to firebase
         .from('doctors')
         .select(`
           *,
@@ -147,7 +147,7 @@ export const useDoctors = () => {
       if (!doctor) throw new Error('Doctor not found');
 
       // Get existing appointments for the date
-      const { data: existingAppointments, error } = await supabase
+      const { data: existingAppointments, error } = await supabase // change to firebase
         .from('appointments')
         .select('appointment_time')
         .eq('doctor_id', doctorId)
@@ -181,7 +181,7 @@ export const useDoctors = () => {
 
   const getSpecialties = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabase // change to firebase
         .from('doctors')
         .select('specialty_category')
         .not('specialty_category', 'is', null);

@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const RegistrationTest = () => {
@@ -31,8 +30,8 @@ const RegistrationTest = () => {
 
     try {
       console.log('Starting test registration...');
-      
-      const { data, error } = await supabase.auth.signUp({
+
+      const { data, error } = await supabase.auth.signUp({ // change this to firebase
         email: formData.email,
         password: formData.password,
         options: {

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
 export interface Appointment {
@@ -35,7 +34,7 @@ export const useAppointments = () => {
     setError(null);
 
     try {
-      let query = supabase
+      let query = supabase // change to firebase
         .from('appointments')
         .select(`
           *,
@@ -110,7 +109,7 @@ export const useAppointments = () => {
     status?: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   }) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabase // change to firebase
         .from('appointments')
         .insert([appointmentData])
         .select()
@@ -129,7 +128,7 @@ export const useAppointments = () => {
 
   const updateAppointment = async (id: string, updates: Partial<Appointment>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabase // change to firebase
         .from('appointments')
         .update(updates)
         .eq('id', id)

@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { addSampleData, clearSampleData } from '@/utils/sampleData';
 import { debugRegistration, completeRegistrationManually, clearSession } from '@/utils/debugRegistration';
-import { testSupabaseConnection } from '@/utils/testSupabase';
 import { toast } from 'sonner';
 
 const DevTools = () => {
@@ -70,7 +69,7 @@ const DevTools = () => {
   const handleTestSupabase = async () => {
     setLoading(true);
     try {
-      const success = await testSupabaseConnection();
+      const success = await testSupabaseConnection(); // change this to firebase
       if (success) {
         toast.success('Supabase test completed - check console');
       } else {

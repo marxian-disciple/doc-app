@@ -61,7 +61,7 @@ const AuthModal = ({ isOpen, onClose, userType }: AuthModalProps) => {
 
     try {
       if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({ //change this to firebase
           email: formData.email,
           password: formData.password,
           options: {
@@ -85,7 +85,7 @@ const AuthModal = ({ isOpen, onClose, userType }: AuthModalProps) => {
           onClose();
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({ //change this to firebase
           email: formData.email,
           password: formData.password,
         });

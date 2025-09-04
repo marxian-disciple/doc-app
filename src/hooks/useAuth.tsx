@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = supabase.auth.onAuthStateChange( // change this to firebase
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (session?.user) {
           // Fetch user profile with proper error handling
           try {
-            const { data: profileData, error: profileError } = await supabase
+            const { data: profileData, error: profileError } = await supabase // change this to firebase
               .from('profiles')
               .select(`
                 *,
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => { // change this to firebase
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut(); // change this to firebase
   };
 
   const value = {

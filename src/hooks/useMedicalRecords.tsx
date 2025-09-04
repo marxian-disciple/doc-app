@@ -32,7 +32,7 @@ export const useMedicalRecords = () => {
     setError(null);
 
     try {
-      let query = supabase
+      let query = supabase // change to firebase
         .from('medical_records')
         .select(`
           *,
@@ -109,7 +109,7 @@ export const useMedicalRecords = () => {
     appointment_id?: string;
   }) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabase // change to firebase
         .from('medical_records')
         .insert([recordData])
         .select()
@@ -128,7 +128,7 @@ export const useMedicalRecords = () => {
 
   const updateMedicalRecord = async (id: string, updates: Partial<MedicalRecord>) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabase // change to firebase
         .from('medical_records')
         .update(updates)
         .eq('id', id)
@@ -148,7 +148,7 @@ export const useMedicalRecords = () => {
 
   const deleteMedicalRecord = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await supabase // change to firebase
         .from('medical_records')
         .delete()
         .eq('id', id);

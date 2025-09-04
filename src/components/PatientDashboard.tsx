@@ -7,7 +7,7 @@ import Hero from '@/components/Hero';
 import MedicalCategories from '@/components/MedicalCategories';
 
 const PatientDashboard = () => {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth(); // change this to firebase
   const navigate = useNavigate();
 
   return (
