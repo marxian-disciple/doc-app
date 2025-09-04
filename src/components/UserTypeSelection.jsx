@@ -1,12 +1,15 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Stethoscope, Calendar, FileText, Shield, MapPin } from "lucide-react";
+import {
+  Users,
+  Stethoscope,
+  Calendar,
+  FileText,
+  Shield,
+  MapPin,
+} from "lucide-react";
 
-interface UserTypeSelectionProps {
-  onUserTypeSelect: (type: 'patient' | 'doctor') => void;
-}
-
-const UserTypeSelection = ({ onUserTypeSelect }: UserTypeSelectionProps) => {
+const UserTypeSelection = ({ onUserTypeSelect }) => {
   return (
     <div className="py-16 bg-gradient-to-b from-primary-lighter/20 to-background">
       <div className="container mx-auto px-6">
@@ -18,7 +21,7 @@ const UserTypeSelection = ({ onUserTypeSelect }: UserTypeSelectionProps) => {
             Choose how you'd like to use our platform
           </p>
         </div>
-        
+
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Patient Card */}
           <Card className="p-8 hover:scale-105 transition-all duration-300 shadow-card hover:shadow-medical">
@@ -29,15 +32,19 @@ const UserTypeSelection = ({ onUserTypeSelect }: UserTypeSelectionProps) => {
                 Book appointments and manage your healthcare journey
               </p>
             </div>
-            
+
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-primary" />
-                <span className="text-sm">Schedule appointments with specialists</span>
+                <span className="text-sm">
+                  Schedule appointments with specialists
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-primary" />
-                <span className="text-sm">Access your medical records securely</span>
+                <span className="text-sm">
+                  Access your medical records securely
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-primary" />
@@ -48,16 +55,16 @@ const UserTypeSelection = ({ onUserTypeSelect }: UserTypeSelectionProps) => {
                 <span className="text-sm">Encrypted data protection</span>
               </div>
             </div>
-            
-            <Button 
-              variant="hero" 
+
+            <Button
+              variant="hero"
               className="w-full"
-              onClick={() => window.location.href = '/auth'}
+              onClick={() => onUserTypeSelect("patient")}
             >
               Get Started as Patient
             </Button>
           </Card>
-          
+
           {/* Doctor Card */}
           <Card className="p-8 hover:scale-105 transition-all duration-300 shadow-card hover:shadow-medical border-primary/20">
             <div className="text-center mb-6">
@@ -67,7 +74,7 @@ const UserTypeSelection = ({ onUserTypeSelect }: UserTypeSelectionProps) => {
                 Manage your practice and provide digital healthcare
               </p>
             </div>
-            
+
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-primary" />
@@ -86,11 +93,11 @@ const UserTypeSelection = ({ onUserTypeSelect }: UserTypeSelectionProps) => {
                 <span className="text-sm">HIPAA-compliant data handling</span>
               </div>
             </div>
-            
-            <Button 
-              variant="medical" 
+
+            <Button
+              variant="medical"
               className="w-full"
-              onClick={() => window.location.href = '/auth'}
+              onClick={() => onUserTypeSelect("doctor")}
             >
               Get Started as Doctor
             </Button>

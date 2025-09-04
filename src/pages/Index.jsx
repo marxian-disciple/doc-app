@@ -8,17 +8,17 @@ import { useAuth } from "../hooks/useAuth";
 
 const Index = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [selectedUserType, setSelectedUserType] = useState<'patient' | 'doctor' | null>(null);
+  const [selectedUserType, setSelectedUserType] = useState(null); // no TS union types
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [user, loading, navigate]);
 
-  const handleUserTypeSelect = (type: 'patient' | 'doctor') => {
+  const handleUserTypeSelect = (type) => {
     setSelectedUserType(type);
     setAuthModalOpen(true);
   };
@@ -29,7 +29,7 @@ const Index = () => {
       <MedicalCategories />
       <UserTypeSelection onUserTypeSelect={handleUserTypeSelect} />
       
-      <AuthModal 
+      <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         userType={selectedUserType}

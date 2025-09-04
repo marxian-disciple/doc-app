@@ -11,7 +11,7 @@ const DoctorDashboard = () => {
   const navigate = useNavigate();
 
   // Get specialty background and icon
-  const getSpecialtyConfig = (specialty: string) => {
+  const getSpecialtyConfig = (specialty) => {
     switch (specialty) {
       case 'heart':
         return {

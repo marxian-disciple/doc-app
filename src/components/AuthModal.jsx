@@ -11,39 +11,34 @@ import { medicalCategories } from "./MedicalCategories";
 import bgHeart from "@/assets/bg-heart.jpg";
 import bgMind from "@/assets/bg-mind.jpg";
 import { toast } from "sonner";
-import { app } from "@/firebase/firebase";
-
-// Use Firebase CDN via window.firebase if available, otherwise fallback to app import
-const firebaseAuth =
-  window.firebase && window.firebase.auth
-    ? window.firebase.auth()
-    : app.auth();
+import { auth } from "@/firebase/firebase"; // ✅ import auth directly
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 function AuthModal({ isOpen, onClose, userType }) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState('register');
-  const [selectedSpecialty, setSelectedSpecialty] = useState('');
+  const [mode, setMode] = useState("register");
+  const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    fullName: '',
-    idNumber: '',
-    medicalAid: '',
-    licenseNumber: '',
-    practiceName: '',
+    email: "",
+    password: "",
+    fullName: "",
+    idNumber: "",
+    medicalAid: "",
+    licenseNumber: "",
+    practiceName: "",
   });
 
-  const selectedCategory = medicalCategories.find(cat => cat.id === selectedSpecialty);
+  const selectedCategory = medicalCategories.find((cat) => cat.id === selectedSpecialty);
 
   const getCategoryBackground = (categoryId) => {
     switch (categoryId) {
-      case 'heart':
+      case "heart":
         return `url(${bgHeart})`;
-      case 'mind':
+      case "mind":
         return `url(${bgMind})`;
       default:
-        return selectedCategory?.gradient || 'bg-gradient-primary';
+        return selectedCategory?.gradient || "bg-gradient-primary";
     }
   };
 
@@ -53,7 +48,7 @@ function AuthModal({ isOpen, onClose, userType }) {
       return;
     }
 
-    if (userType === 'doctor' && !selectedSpecialty) {
+    if (userType === "doctor" && !selectedSpecialty) {
       toast.error("Please select your medical specialty");
       return;
     }
@@ -61,22 +56,20 @@ function AuthModal({ isOpen, onClose, userType }) {
     setLoading(true);
 
     try {
-      if (mode === 'register') {
-        // Register with Firebase
-        await firebaseAuth.createUserWithEmailAndPassword(formData.email, formData.password);
-        // Optionally update profile
-        const user = firebaseAuth.currentUser;
-        await user.updateProfile({
-          displayName: formData.fullName,
-        });
-        toast.success("Account created successfully! Please check your email to confirm your account.");
+      if (mode === "register") {
+        // Firebase v9+ registration
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        if (userCredential.user) {
+          await updateProfile(userCredential.user, { displayName: formData.fullName });
+        }
+        toast.success("Account created successfully!");
         onClose();
       } else {
-        // Login with Firebase
-        await firebaseAuth.signInWithEmailAndPassword(formData.email, formData.password);
+        // Firebase v9+ login
+        await signInWithEmailAndPassword(auth, formData.email, formData.password);
         toast.success("Signed in successfully!");
         onClose();
-        navigate('/dashboard');
+        navigate("/dashboard");
       }
     } catch (error) {
       toast.error(error.message || "An unexpected error occurred");
@@ -90,25 +83,27 @@ function AuthModal({ isOpen, onClose, userType }) {
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {userType === 'doctor' ? <Stethoscope className="w-5 h-5" /> : <Users className="w-5 h-5" />}
-            {mode === 'login' ? 'Sign In' : 'Create Account'} as {userType === 'doctor' ? 'Doctor' : 'Patient'}
+            {userType === "doctor" ? <Stethoscope className="w-5 h-5" /> : <Users className="w-5 h-5" />}
+            {mode === "login" ? "Sign In" : "Create Account"} as {userType === "doctor" ? "Doctor" : "Patient"}
           </DialogTitle>
         </DialogHeader>
-        
-        {userType === 'doctor' && selectedSpecialty && (
-          <Card 
+
+        {/* Doctor specialty card */}
+        {userType === "doctor" && selectedSpecialty && (
+          <Card
             className="p-4 mb-4 text-white relative overflow-hidden"
             style={{
-              background: selectedCategory?.id === 'heart' || selectedCategory?.id === 'mind' 
-                ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), ${getCategoryBackground(selectedCategory.id)}`
-                : selectedCategory?.gradient
+              background:
+                selectedCategory?.id === "heart" || selectedCategory?.id === "mind"
+                  ? `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), ${getCategoryBackground(selectedCategory.id)}`
+                  : selectedCategory?.gradient,
             }}
           >
             <div className="relative z-10">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setSelectedSpecialty('')}
+                onClick={() => setSelectedSpecialty("")}
                 className="text-white hover:bg-white/20 mb-2"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
@@ -119,9 +114,10 @@ function AuthModal({ isOpen, onClose, userType }) {
             </div>
           </Card>
         )}
-        
+
+        {/* Form fields */}
         <div className="space-y-4">
-          {userType === 'doctor' && !selectedSpecialty && (
+          {userType === "doctor" && !selectedSpecialty && (
             <div>
               <Label htmlFor="specialty">Medical Specialty</Label>
               <Select onValueChange={setSelectedSpecialty}>
@@ -138,111 +134,62 @@ function AuthModal({ isOpen, onClose, userType }) {
               </Select>
             </div>
           )}
-          
-          {(userType === 'patient' || selectedSpecialty) && (
+
+          {(userType === "patient" || selectedSpecialty) && (
             <>
               <div className="grid w-full items-center gap-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input 
-                  type="email" 
-                  id="email" 
+                <Input
+                  type="email"
+                  id="email"
                   placeholder="Enter your email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
               </div>
-              
+
               <div className="grid w-full items-center gap-1.5">
                 <Label htmlFor="password">Password</Label>
-                <Input 
-                  type="password" 
-                  id="password" 
+                <Input
+                  type="password"
+                  id="password"
                   placeholder="Enter your password"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
               </div>
-              
-              {mode === 'register' && (
+
+              {mode === "register" && (
                 <>
                   <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input 
-                      id="name" 
+                    <Input
+                      id="name"
                       placeholder="Enter your full name"
                       value={formData.fullName}
-                      onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     />
                   </div>
-                  
-                  {userType === 'patient' && (
-                    <>
-                      <div className="grid w-full items-center gap-1.5">
-                        <Label htmlFor="id-number">ID Number</Label>
-                        <Input 
-                          id="id-number" 
-                          placeholder="Enter your ID number"
-                          value={formData.idNumber}
-                          onChange={(e) => setFormData({...formData, idNumber: e.target.value})}
-                        />
-                      </div>
-                      
-                      <div className="grid w-full items-center gap-1.5">
-                        <Label htmlFor="medical-aid">Medical Aid</Label>
-                        <Input 
-                          id="medical-aid" 
-                          placeholder="Enter your medical aid details"
-                          value={formData.medicalAid}
-                          onChange={(e) => setFormData({...formData, medicalAid: e.target.value})}
-                        />
-                      </div>
-                    </>
-                  )}
-                  
-                  {userType === 'doctor' && (
-                    <>
-                      <div className="grid w-full items-center gap-1.5">
-                        <Label htmlFor="license">License Number</Label>
-                        <Input 
-                          id="license" 
-                          placeholder="Enter your medical license number"
-                          value={formData.licenseNumber}
-                          onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
-                        />
-                      </div>
-                      
-                      <div className="grid w-full items-center gap-1.5">
-                        <Label htmlFor="practice">Practice Name</Label>
-                        <Input 
-                          id="practice" 
-                          placeholder="Enter your practice name"
-                          value={formData.practiceName}
-                          onChange={(e) => setFormData({...formData, practiceName: e.target.value})}
-                        />
-                      </div>
-                    </>
-                  )}
                 </>
               )}
-              
-              <Button 
-                variant="medical" 
+
+              <Button
+                variant="medical"
                 className="w-full mt-6"
                 onClick={handleAuthAction}
                 disabled={loading}
               >
-                {loading ? 'Please wait...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
+                {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
               </Button>
-              
+
               <div className="text-center">
-                <Button 
-                  variant="link" 
-                  onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+                <Button
+                  variant="link"
+                  onClick={() => setMode(mode === "login" ? "register" : "login")}
                 >
-                  {mode === 'login' 
-                    ? "Don't have an account? Register" 
-                    : "Already have an account? Sign In"
-                  }
+                  {mode === "login"
+                    ? "Don't have an account? Register"
+                    : "Already have an account? Sign In"}
                 </Button>
               </div>
             </>
