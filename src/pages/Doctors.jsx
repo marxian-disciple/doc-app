@@ -15,7 +15,7 @@ const Doctors = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('');
-  const [specialties, setSpecialties] = useState<string[]>(['All']);
+  const [specialties, setSpecialties] = useState(['All']);
 
   // Load specialties on component mount
   useEffect(() => {
@@ -59,7 +59,7 @@ const Doctors = () => {
 
   const isDoctor = profile?.user_type === 'doctor';
 
-  const handleBookAppointment = (doctorId: string) => {
+  const handleBookAppointment = (doctorId) => {
     // Navigate to appointment booking page or open modal
     toast.info('Appointment booking feature coming soon!');
     // You can implement appointment booking logic here

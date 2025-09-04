@@ -119,7 +119,7 @@ export const completeRegistrationManually = async () => {
     
   } catch (error) {
     console.error('Manual completion error:', error);
-    toast.error('Failed to complete registration: ' + (error as Error).message);
+    toast.error('Failed to complete registration: ' + (error.message));
   }
 };
 
@@ -135,7 +135,7 @@ export const clearSession = async () => {
 };
 
 // Function to manually create a profile (bypassing the trigger)
-export const createProfileManually = async (user: any) => {
+export const createProfileManually = async (user) => {
   try {
     console.log('Creating profile manually for user:', user.id);
     
@@ -239,6 +239,6 @@ export const completeRegistrationBypass = async () => {
     
   } catch (error) {
     console.error('Registration bypass error:', error);
-    toast.error('Failed to complete registration: ' + (error as Error).message);
+    toast.error('Failed to complete registration: ' + error.message);
   }
 };
