@@ -11,8 +11,9 @@ import { medicalCategories } from "./MedicalCategories";
 import bgHeart from "@/assets/bg-heart.jpg";
 import bgMind from "@/assets/bg-mind.jpg";
 import { toast } from "sonner";
-import { auth } from "@/firebase/firebase"; // ✅ import auth directly
+import { auth, db } from "@/firebase/firebase"; // ✅ import both auth and db
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; // ✅ Add Firestore functions
 
 function AuthModal({ isOpen, onClose, userType }) {
   const navigate = useNavigate();
@@ -59,11 +60,39 @@ function AuthModal({ isOpen, onClose, userType }) {
       if (mode === "register") {
         // Firebase v9+ registration
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        
         if (userCredential.user) {
           await updateProfile(userCredential.user, { displayName: formData.fullName });
+          
+          // ✅ CREATE USER PROFILE IN FIRESTORE
+          const userProfile = {
+            uid: userCredential.user.uid,
+            email: formData.email,
+            fullName: formData.fullName,
+            user_type: userType, // ✅ This is the key part!
+            createdAt: new Date().toISOString(),
+          };
+
+          // Add user type specific fields
+          if (userType === "doctor") {
+            userProfile.specialty = selectedSpecialty;
+            userProfile.licenseNumber = formData.licenseNumber;
+            userProfile.practiceName = formData.practiceName;
+          } else {
+            userProfile.idNumber = formData.idNumber;
+            userProfile.medicalAid = formData.medicalAid;
+          }
+
+          // Save to Firestore - match the collection name your hook expects
+          await setDoc(doc(db, "profiles", userCredential.user.uid), userProfile);
+          
+          console.log("User profile created:", userProfile); // Debug log
         }
+        
         toast.success("Account created successfully!");
         onClose();
+        // ✅ Force a page refresh to ensure profile is loaded
+        window.location.href = "/dashboard";
       } else {
         // Firebase v9+ login
         await signInWithEmailAndPassword(auth, formData.email, formData.password);
@@ -72,6 +101,7 @@ function AuthModal({ isOpen, onClose, userType }) {
         navigate("/dashboard");
       }
     } catch (error) {
+      console.error("Auth error:", error); // Debug log
       toast.error(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
@@ -170,6 +200,53 @@ function AuthModal({ isOpen, onClose, userType }) {
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     />
                   </div>
+
+                  {/* Additional fields for registration */}
+                  {userType === "doctor" && (
+                    <>
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="license">License Number</Label>
+                        <Input
+                          id="license"
+                          placeholder="Enter your medical license number"
+                          value={formData.licenseNumber}
+                          onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
+                        />
+                      </div>
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="practice">Practice Name</Label>
+                        <Input
+                          id="practice"
+                          placeholder="Enter your practice name"
+                          value={formData.practiceName}
+                          onChange={(e) => setFormData({ ...formData, practiceName: e.target.value })}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {userType === "patient" && (
+                    <>
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="idNumber">ID Number</Label>
+                        <Input
+                          id="idNumber"
+                          placeholder="Enter your ID number"
+                          value={formData.idNumber}
+                          onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                        />
+                      </div>
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="medicalAid">Medical Aid (Optional)</Label>
+                        <Input
+                          id="medicalAid"
+                          placeholder="Enter your medical aid"
+                          value={formData.medicalAid}
+                          onChange={(e) => setFormData({ ...formData, medicalAid: e.target.value })}
+                        />
+                      </div>
+                    </>
+                  )}
                 </>
               )}
 
