@@ -11,17 +11,18 @@ import { medicalCategories } from "./MedicalCategories";
 import bgHeart from "@/assets/bg-heart.jpg";
 import bgMind from "@/assets/bg-mind.jpg";
 import { toast } from "sonner";
+import { app } from "@/firebase/firebase";
 
-interface AuthModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  userType: 'patient' | 'doctor' | null;
-}
+// Use Firebase CDN via window.firebase if available, otherwise fallback to app import
+const firebaseAuth =
+  window.firebase && window.firebase.auth
+    ? window.firebase.auth()
+    : app.auth();
 
-const AuthModal = ({ isOpen, onClose, userType }: AuthModalProps) => {
+function AuthModal({ isOpen, onClose, userType }) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'login' | 'register'>('register');
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string>('');
+  const [mode, setMode] = useState('register');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -32,10 +33,10 @@ const AuthModal = ({ isOpen, onClose, userType }: AuthModalProps) => {
     licenseNumber: '',
     practiceName: '',
   });
-  
+
   const selectedCategory = medicalCategories.find(cat => cat.id === selectedSpecialty);
-  
-  const getCategoryBackground = (categoryId: string) => {
+
+  const getCategoryBackground = (categoryId) => {
     switch (categoryId) {
       case 'heart':
         return `url(${bgHeart})`;
@@ -61,46 +62,24 @@ const AuthModal = ({ isOpen, onClose, userType }: AuthModalProps) => {
 
     try {
       if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({ //change this to firebase
-          email: formData.email,
-          password: formData.password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: {
-              user_type: userType,
-              full_name: formData.fullName,
-              specialty_category: userType === 'doctor' ? selectedSpecialty : undefined,
-              license_number: userType === 'doctor' ? formData.licenseNumber : undefined,
-              practice_name: userType === 'doctor' ? formData.practiceName : undefined,
-              id_number: userType === 'patient' ? formData.idNumber : undefined,
-              medical_aid: userType === 'patient' ? formData.medicalAid : undefined,
-            }
-          }
+        // Register with Firebase
+        await firebaseAuth.createUserWithEmailAndPassword(formData.email, formData.password);
+        // Optionally update profile
+        const user = firebaseAuth.currentUser;
+        await user.updateProfile({
+          displayName: formData.fullName,
         });
-
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success("Account created successfully! Please check your email to confirm your account.");
-          onClose();
-        }
+        toast.success("Account created successfully! Please check your email to confirm your account.");
+        onClose();
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ //change this to firebase
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success("Signed in successfully!");
-          onClose();
-          // Add redirect after successful login
-          navigate('/dashboard');
-        }
+        // Login with Firebase
+        await firebaseAuth.signInWithEmailAndPassword(formData.email, formData.password);
+        toast.success("Signed in successfully!");
+        onClose();
+        navigate('/dashboard');
       }
     } catch (error) {
-      toast.error("An unexpected error occurred");
+      toast.error(error.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
     }
@@ -272,6 +251,6 @@ const AuthModal = ({ isOpen, onClose, userType }: AuthModalProps) => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default AuthModal;

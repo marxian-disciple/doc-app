@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { usePatientRegistrationHandler } from '@/components/PatientRegistrationHandler';
+import { usePatientRegistrationHandler } from '../components/PatientRegistrationHandler';
 
 interface Doctor {
   id: string;
