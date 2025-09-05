@@ -12,6 +12,9 @@ const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
+  // Debug logging
+  console.log('Index component rendering:', { user, loading });
+
   useEffect(() => {
     if (user && !loading) {
       navigate("/dashboard");
