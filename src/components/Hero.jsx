@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import heroImage from "../assets/hero-medical.jpg";
 
 const Hero = () => {
+  console.log('Hero component rendering');
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-primary-lighter to-background">
       {/* Background Image */}
