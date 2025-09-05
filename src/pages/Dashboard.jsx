@@ -35,3 +35,10 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+/*
+
+This file contains the dashboard layout and the card components, each linking to a different route or page in your app.
+You can edit or review this file to manage the dashboard cards
+
+*/

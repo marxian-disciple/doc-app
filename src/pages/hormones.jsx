@@ -184,29 +184,18 @@ const HormonesMetabolism = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-hormones text-white">
+      <section className="py-16 bg-blue-100">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-6">
-            Balanced Hormones, Healthier Metabolism
+            Ready to Take Control of Your Health?
           </h2>
-          <p className="text-xl mb-8 text-white/90">
-            Our endocrinology experts are here to restore your energy, balance,
-            and overall well-being.
+          <p className="text-xl mb-8 text-muted-foreground">
+            Schedule your appointment today and start your journey to better hormonal health
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="group">
-              <Calendar className="mr-2 group-hover:scale-110 transition-transform" />
-              Schedule Appointment
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-white border-white hover:bg-white hover:text-orange-600"
-            >
-              <Activity className="mr-2" />
-              Endocrine Helpline: (555) 456-ENDO
-            </Button>
-          </div>
+          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Calendar className="mr-2" />
+            Schedule Appointment
+          </Button>
         </div>
       </section>
     </div>
