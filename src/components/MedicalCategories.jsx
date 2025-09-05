@@ -12,7 +12,6 @@ import {
   Sparkles, 
   Zap, 
   Smile,
-  Plus
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -113,14 +112,7 @@ const medicalCategories = [
     gradient: "bg-gradient-to-br from-gray-200 to-gray-400",
     path: "/teeth"
   },
-  {
-    id: "other",
-    name: "Other",
-    icon: Plus,
-    color: "bg-medical-other",
-    gradient: "bg-gradient-to-br from-indigo-400 to-indigo-600",
-    path: "/other"
-  }
+  
 ];
 
 const MedicalCategories = () => {
