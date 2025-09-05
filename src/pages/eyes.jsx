@@ -173,18 +173,18 @@ const EyesEarsNoseThroat = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-ent text-white">
+      <section className="py-16 bg-blue-100 text-foreground">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-6">Clearer Vision, Better Hearing, Easier Breathing</h2>
-          <p className="text-xl mb-8 text-white/90">
+          <p className="text-xl mb-8 text-muted-foreground">
             Our ENT specialists are here to improve your quality of life with expert care.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="group">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white group">
               <Calendar className="mr-2 group-hover:scale-110 transition-transform" />
               Schedule Appointment
             </Button>
-            <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-blue-600">
+            <Button variant="outline" size="lg" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
               <Activity className="mr-2" />
               Urgent Care: (555) 123-ENTC
             </Button>

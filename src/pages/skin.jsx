@@ -154,19 +154,19 @@ const SkinHairAppearance = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-skin text-white">
+      {/* CTA Section - Updated with light blue background */}
+      <section className="py-16 bg-blue-100 text-foreground">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-6">Healthy Skin, Strong Hair, Confident You</h2>
-          <p className="text-xl mb-8 text-white/90">
+          <p className="text-xl mb-8 text-muted-foreground">
             Our dermatology and cosmetic experts are here to help you achieve your best appearance.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="group">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white group">
               <Calendar className="mr-2 group-hover:scale-110 transition-transform" />
               Schedule Appointment
             </Button>
-            <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-orange-600">
+            <Button variant="outline" size="lg" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
               <Sparkles className="mr-2" />
               Cosmetic Hotline: (555) 987-SKIN
             </Button>

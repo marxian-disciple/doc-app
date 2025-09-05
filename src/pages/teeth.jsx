@@ -149,24 +149,7 @@ const TeethAndMouth = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-skin text-white">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-6">Healthy Teeth, Confident Smile</h2>
-          <p className="text-xl mb-8 text-white/90">
-            Our dental and oral health specialists are here to help you maintain a bright, healthy smile.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg" className="group">
-              <Calendar className="mr-2 group-hover:scale-110 transition-transform" />
-              Schedule Appointment
-            </Button>
-            <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-orange-600">
-              <Zap className="mr-2" />
-              Dental Hotline: (555) 123-TEETH
-            </Button>
-          </div>
-        </div>
-      </section>
+      
     </div>
   );
 };
