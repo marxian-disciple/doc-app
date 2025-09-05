@@ -126,7 +126,7 @@ const DoctorDashboard = () => {
           </Card>
 
           <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer"
-                onClick={() => navigate('/medical-records')}>
+                onClick={() => navigate('/patient_medical_records')}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
