@@ -1,4 +1,5 @@
 import { useAuth } from '../hooks/useAuth';
+import NewAppointment from '../components/NewAppointment';
 import { useDoctors } from '../hooks/useDoctors';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -6,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Search, MapPin, Clock, Star, ArrowLeft, Calendar, AlertCircle } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 const Doctors = () => {
@@ -16,6 +17,18 @@ const Doctors = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [specialtyFilter, setSpecialtyFilter] = useState('');
   const [specialties, setSpecialties] = useState(['All']);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+
+  const handleBookAppointment = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowAppointmentModal(true);
+  };
+
+  const handleCloseAppointment = () => {
+    setSelectedDoctor(null);
+    setShowAppointmentModal(false);
+  };
 
   // Load specialties on component mount
   useEffect(() => {
@@ -30,17 +43,22 @@ const Doctors = () => {
     loadSpecialties();
   }, [getSpecialties]);
 
-  // Filter doctors based on search and specialty
+  // ✅ Create a stable callback for refetching
+  const handleRefetch = useCallback(() => {
+    refetch({
+      specialty: specialtyFilter,
+      search: searchTerm
+    });
+  }, [refetch, specialtyFilter, searchTerm]);
+
+  // ✅ Use the stable callback in useEffect
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      refetch({
-        specialty: specialtyFilter,
-        search: searchTerm
-      });
+      handleRefetch();
     }, 300); // Debounce search
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, specialtyFilter, refetch]);
+  }, [handleRefetch]); // Now this dependency is stable
 
   if (authLoading || doctorsLoading) {
     return (
@@ -58,12 +76,6 @@ const Doctors = () => {
   }
 
   const isDoctor = profile?.user_type === 'doctor';
-
-  const handleBookAppointment = (doctorId) => {
-    // Navigate to appointment booking page or open modal
-    toast.info('Appointment booking feature coming soon!');
-    // You can implement appointment booking logic here
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -117,7 +129,7 @@ const Doctors = () => {
               </SelectContent>
             </Select>
             {!isDoctor && (
-              <Button className="w-full md:w-auto">
+              <Button className="w-full md:w-auto" onClick={() => handleBookAppointment(doctor)}>
                 <Calendar className="w-4 h-4 mr-2" />
                 Book Appointment
               </Button>
@@ -137,7 +149,7 @@ const Doctors = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                onClick={() => refetch()}
+                onClick={handleRefetch}
                 className="mt-3"
               >
                 Try Again
@@ -155,13 +167,13 @@ const Doctors = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-2xl font-bold text-primary">
-                        {doctor.full_name?.charAt(0) || 'D'}
+                        {doctor.fullName?.charAt(0) || 'D'}
                       </span>
                     </div>
                     <div>
-                      <CardTitle className="text-lg">{doctor.full_name || 'Dr. Unknown'}</CardTitle>
+                      <CardTitle className="text-lg">{doctor.fullName || 'Dr. Unknown'}</CardTitle>
                       <CardDescription className="text-primary font-medium">
-                        {doctor.specialty_category}
+                        {doctor.specialty}
                       </CardDescription>
                     </div>
                   </div>
@@ -239,6 +251,13 @@ const Doctors = () => {
           </Card>
         )}
       </main>
+
+      {/* NewAppointment Modal */}
+      <NewAppointment 
+        isOpen={showAppointmentModal} 
+        onClose={handleCloseAppointment}
+        selectedDoctor={selectedDoctor}
+      />
     </div>
   );
 };
