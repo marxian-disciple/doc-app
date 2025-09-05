@@ -79,7 +79,7 @@ const DoctorDashboard = () => {
             <div>
               <h1 className="text-3xl font-bold">DocsVisita</h1>
               <p className="text-lg opacity-90">
-                Welcome back, Dr. {profile?.full_name || user.email}
+                Welcome back, Dr. {profile?.fullName || user.email}
               </p>
               <p className="text-sm opacity-75 capitalize">
                 {specialtyConfig.title}

@@ -22,9 +22,7 @@ const Appointments = () => {
     );
   }
 
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
+  if (!user) return <Navigate to="/" replace />;
 
   const isDoctor = profile?.user_type === 'doctor';
 
@@ -85,7 +83,10 @@ const Appointments = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <Button className="mb-4">
+          <Button
+            className="mb-4"
+            onClick={() => navigate(isDoctor ? '/newappointments' : '/doctors')}
+          >
             <Calendar className="w-4 h-4 mr-2" />
             {isDoctor ? 'Schedule New Appointment' : 'Book Appointment'}
           </Button>
@@ -114,7 +115,7 @@ const Appointments = () => {
                       {appointment.appointment_date} at {appointment.appointment_time}
                     </CardTitle>
                     <CardDescription>
-                      {isDoctor ? `Patient: ${appointment.patient_name || 'Unknown'}` : `Doctor: ${appointment.doctor_name || 'Unknown'}`}
+                      {isDoctor ? `Patient: ${appointment.patientName || 'Unknown'}` : `Doctor: ${appointment.doctorName || 'Unknown'}`}
                     </CardDescription>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(appointment.status)}`}>
@@ -127,7 +128,7 @@ const Appointments = () => {
                   <div className="flex items-center gap-2">
                     <User className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm">
-                      {isDoctor ? appointment.patient_name || 'Unknown Patient' : appointment.doctor_name || 'Unknown Doctor'}
+                      {isDoctor ? appointment.patientName || 'Unknown Patient' : appointment.doctorName || 'Unknown Doctor'}
                     </span>
                   </div>
                   {appointment.specialty && (
@@ -180,7 +181,7 @@ const Appointments = () => {
                 <p className="text-muted-foreground mb-4">
                   {isDoctor ? 'You don\'t have any scheduled appointments.' : 'You don\'t have any upcoming appointments.'}
                 </p>
-                <Button onClick={() => navigate('/doctors')}>
+                <Button onClick={() => navigate(isDoctor ? '/newappointments' : '/doctors')}>
                   {isDoctor ? 'Schedule Appointment' : 'Book Your First Appointment'}
                 </Button>
               </CardContent>
