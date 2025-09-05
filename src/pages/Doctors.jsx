@@ -10,6 +10,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
+// ...imports stay the same
+
 const Doctors = () => {
   const { user, profile, loading: authLoading } = useAuth();
   const { doctors, loading: doctorsLoading, error, refetch, getSpecialties } = useDoctors();
@@ -21,7 +23,7 @@ const Doctors = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   const handleBookAppointment = (doctor) => {
-    setSelectedDoctor(doctor);
+    setSelectedDoctor(doctor); // pass full doctor object
     setShowAppointmentModal(true);
   };
 
@@ -30,7 +32,7 @@ const Doctors = () => {
     setShowAppointmentModal(false);
   };
 
-  // Load specialties on component mount
+  // Load specialties
   useEffect(() => {
     const loadSpecialties = async () => {
       try {
@@ -43,22 +45,17 @@ const Doctors = () => {
     loadSpecialties();
   }, [getSpecialties]);
 
-  // ✅ Create a stable callback for refetching
+  // Debounced refetch
   const handleRefetch = useCallback(() => {
-    refetch({
-      specialty: specialtyFilter,
-      search: searchTerm
-    });
+    refetch({ specialty: specialtyFilter, search: searchTerm });
   }, [refetch, specialtyFilter, searchTerm]);
 
-  // ✅ Use the stable callback in useEffect
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       handleRefetch();
-    }, 300); // Debounce search
-
+    }, 300);
     return () => clearTimeout(timeoutId);
-  }, [handleRefetch]); // Now this dependency is stable
+  }, [handleRefetch]);
 
   if (authLoading || doctorsLoading) {
     return (
@@ -71,9 +68,7 @@ const Doctors = () => {
     );
   }
 
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
+  if (!user) return <Navigate to="/" replace />;
 
   const isDoctor = profile?.user_type === 'doctor';
 
@@ -81,24 +76,21 @@ const Doctors = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-primary">
-                {isDoctor ? 'Patient Management' : 'Find a Doctor'}
-              </h1>
-              <p className="text-muted-foreground">
-                {isDoctor ? 'Search and manage your patients' : 'Book appointments with specialists'}
-              </p>
-            </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-primary">
+              {isDoctor ? 'Patient Management' : 'Find a Doctor'}
+            </h1>
+            <p className="text-muted-foreground">
+              {isDoctor ? 'Search and manage your patients' : 'Book appointments with specialists'}
+            </p>
           </div>
         </div>
       </header>
@@ -128,12 +120,6 @@ const Doctors = () => {
                 ))}
               </SelectContent>
             </Select>
-            {!isDoctor && (
-              <Button className="w-full md:w-auto" onClick={() => handleBookAppointment(doctor)}>
-                <Calendar className="w-4 h-4 mr-2" />
-                Book Appointment
-              </Button>
-            )}
           </div>
         </div>
 
@@ -146,19 +132,14 @@ const Doctors = () => {
                 <span className="font-medium">Error loading doctors</span>
               </div>
               <p className="text-red-600 mt-2">{error}</p>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleRefetch}
-                className="mt-3"
-              >
+              <Button variant="outline" size="sm" onClick={handleRefetch} className="mt-3">
                 Try Again
               </Button>
             </CardContent>
           </Card>
         )}
 
-        {/* Results */}
+        {/* Doctors List */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {doctors.map((doctor) => (
             <Card key={doctor.id} className="hover:shadow-lg transition-all duration-200">
@@ -173,7 +154,7 @@ const Doctors = () => {
                     <div>
                       <CardTitle className="text-lg">{doctor.fullName || 'Dr. Unknown'}</CardTitle>
                       <CardDescription className="text-primary font-medium">
-                        {doctor.specialty}
+                        {doctor.specialty || 'General'}
                       </CardDescription>
                     </div>
                   </div>
@@ -212,19 +193,16 @@ const Doctors = () => {
                     </div>
                   )}
                 </div>
+
                 <div className="flex gap-2 mt-4">
                   {isDoctor ? (
-                    <Button variant="outline" className="w-full">
-                      View Patient List
-                    </Button>
+                    <Button variant="outline" className="w-full">View Patient List</Button>
                   ) : (
                     <>
-                      <Button variant="outline" className="flex-1">
-                        View Profile
-                      </Button>
+                      <Button variant="outline" className="flex-1">View Profile</Button>
                       <Button 
                         className="flex-1"
-                        onClick={() => handleBookAppointment(doctor.id)}
+                        onClick={() => handleBookAppointment(doctor)}
                       >
                         Book Appointment
                       </Button>
@@ -253,8 +231,8 @@ const Doctors = () => {
       </main>
 
       {/* NewAppointment Modal */}
-      <NewAppointment 
-        isOpen={showAppointmentModal} 
+      <NewAppointment
+        isOpen={showAppointmentModal}
         onClose={handleCloseAppointment}
         selectedDoctor={selectedDoctor}
       />
