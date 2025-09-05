@@ -28,6 +28,10 @@ function AuthModal({ isOpen, onClose, userType }) {
     medicalAid: "",
     licenseNumber: "",
     practiceName: "",
+    bloodType: "",
+    emergencyContact: "",
+    emergencyPhone: "",
+    pastMedicalHistory: "",
   });
 
   const selectedCategory = medicalCategories.find((cat) => cat.id === selectedSpecialty);
@@ -245,6 +249,55 @@ function AuthModal({ isOpen, onClose, userType }) {
                           onChange={(e) => setFormData({ ...formData, medicalAid: e.target.value })}
                         />
                       </div>
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="bloodType">Blood Type</Label>
+                        <Select
+                          onValueChange={(value) =>
+                            setFormData({ ...formData, bloodType: value })
+                          }
+                          value={formData.bloodType}
+                        >
+                          <SelectTrigger id="bloodType">
+                            <SelectValue placeholder="Select your blood type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="A+">A+</SelectItem>
+                            <SelectItem value="A-">A-</SelectItem>
+                            <SelectItem value="B+">B+</SelectItem>
+                            <SelectItem value="B-">B-</SelectItem>
+                            <SelectItem value="AB+">AB+</SelectItem>
+                            <SelectItem value="AB-">AB-</SelectItem>
+                            <SelectItem value="O+">O+</SelectItem>
+                            <SelectItem value="O-">O-</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="emergencyContact">Emergency Contact</Label>
+                        <Input
+                          id="emergencyContact"
+                          placeholder="Enter emergency contact name"
+                          value={formData.emergencyContact}
+                          onChange={(e) =>
+                            setFormData({ ...formData, emergencyContact: e.target.value })
+                          }
+                        />
+                      </div>
+
+                      <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="emergencyPhone">Emergency Phone</Label>
+                        <Input
+                          id="emergencyPhone"
+                          type="tel"
+                          placeholder="Enter emergency contact phone"
+                          value={formData.emergencyPhone}
+                          onChange={(e) =>
+                            setFormData({ ...formData, emergencyPhone: e.target.value })
+                          }
+                        />
+                      </div>
+
                     </>
                   )}
                 </>

@@ -18,8 +18,10 @@ import {
   User2,
   MessageCircleQuestion,
   ArrowRight,
-  Lock
+  Lock,
+  ArrowLeft
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // shadcn/ui imports (available in this environment)
 import { Button } from "@/components/ui/button";
@@ -95,6 +97,7 @@ const conditions = [
 ];
 
 function SectionShell({ children, className = "" }) {
+    
   return (
     <section className={`w-full max-w-6xl mx-auto px-4 md:px-6 ${className}`}>{children}</section>
   );
@@ -103,14 +106,24 @@ function SectionShell({ children, className = "" }) {
 function Hero() {
   return (
     <div className="relative overflow-hidden">
+        
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="bg-gradient-to-br from-pink-600 via-fuchsia-600 to-rose-600 text-white"
       >
+        {/* Back Arrow */}
+      <Link
+        to="/"
+        className="inline-flex items-center mb-6 text-white/80 hover:text-white transition-colors"
+      >
+        <ArrowLeft className="mr-2 w-4 h-4" />
+        Back to Home
+      </Link>
         <SectionShell className="py-14 md:py-20">
           <div className="grid md:grid-cols-2 gap-8 items-center">
+            
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Baby className="w-5 h-5" aria-hidden />
@@ -307,6 +320,7 @@ function BookingAndRecords() {
 function BookingForm({ isVirtual }) {
   return (
     <div className="grid gap-4">
+
       <div className="grid gap-2 sm:grid-cols-2">
         <div>
           <Label htmlFor="fullname">Full name</Label>

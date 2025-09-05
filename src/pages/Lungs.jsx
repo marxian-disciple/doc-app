@@ -17,6 +17,8 @@ import {
   addRecord,
   contactSupport,
 } from "@/backend/api/api";
+import {Link }  from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 // ✅ Custom Lungs Icon (since lucide-react has no 'Lungs')
 const LungsIcon = () => (
@@ -75,6 +77,9 @@ export default function LungsAndBreathing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-12 px-6">
+        <Link to="/" className="inline-flex items-center mb-6 text-teal-600 hover:text-teal-800 transition-colors">
+        <ArrowLeft className="mr-2 w-4 h-4" /> Back to Home
+        </Link>   
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <h1 className="text-4xl font-extrabold text-cyan-800 mb-3 flex justify-center items-center gap-3">
