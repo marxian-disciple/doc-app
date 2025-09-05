@@ -5,6 +5,7 @@ import {
   query,
   where,
   getDocs,
+  getDoc,
   doc,
   setDoc,
   deleteDoc,
@@ -19,7 +20,11 @@ export const useAppointments = () => {
   const [error, setError] = useState(null);
 
   const fetchAppointments = useCallback(async () => {
-    if (!user || !profile?.id) return;
+    if (!user || !profile?.uid) {
+      setAppointments([]);
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -27,18 +32,14 @@ export const useAppointments = () => {
     try {
       let q = collection(db, 'appointments');
 
-      // Only fetch appointments relevant to this user
-      if (profile.user_type === 'patient') {
-        q = query(q, where('patientId', '==', profile.id), orderBy('createdAt', 'desc'));
-      } else if (profile.user_type === 'doctor') {
-        q = query(q, where('doctorId', '==', profile.id), orderBy('createdAt', 'desc'));
+      if (profile.user_type === 'doctor') {
+        q = query(q, where('doctorId', '==', profile.uid), orderBy('createdAt', 'desc'));
+      } else if (profile.user_type === 'patient') {
+        q = query(q, where('patientId', '==', profile.uid), orderBy('createdAt', 'desc'));
       }
 
       const snapshot = await getDocs(q);
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
 
       setAppointments(data);
     } catch (err) {
@@ -49,19 +50,15 @@ export const useAppointments = () => {
     }
   }, [user, profile]);
 
-  // Confirm appointment: move to confirmed_appointments with status
   const confirmAppointment = useCallback(
     async (appointmentId) => {
-      if (!user) return;
-
       try {
         const docRef = doc(db, 'appointments', appointmentId);
-        const snapshot = await getDocs(query(collection(db, 'appointments')));
-        const appointment = snapshot.docs.find((d) => d.id === appointmentId)?.data();
+        const docSnap = await getDoc(docRef);
 
-        if (!appointment) throw new Error('Appointment not found');
+        if (!docSnap.exists()) throw new Error('Appointment not found');
+        const appointment = docSnap.data();
 
-        // Move to confirmed_appointments
         const confirmedRef = doc(db, 'confirmed_appointments', appointmentId);
         await setDoc(confirmedRef, {
           ...appointment,
@@ -69,7 +66,6 @@ export const useAppointments = () => {
           confirmedAt: new Date().toISOString(),
         });
 
-        // Remove from appointments collection
         await deleteDoc(docRef);
 
         await fetchAppointments();
@@ -78,14 +74,11 @@ export const useAppointments = () => {
         throw err;
       }
     },
-    [fetchAppointments, user]
+    [fetchAppointments]
   );
 
-  // Cancel appointment: update status in appointments
   const cancelAppointment = useCallback(
     async (appointmentId) => {
-      if (!user) return;
-
       try {
         const docRef = doc(db, 'appointments', appointmentId);
         await setDoc(
@@ -100,7 +93,7 @@ export const useAppointments = () => {
         throw err;
       }
     },
-    [fetchAppointments, user]
+    [fetchAppointments]
   );
 
   const createAppointment = useCallback(
@@ -118,8 +111,8 @@ export const useAppointments = () => {
   );
 
   useEffect(() => {
-    if (user && profile) fetchAppointments();
-  }, [user, profile, fetchAppointments]);
+    fetchAppointments();
+  }, [fetchAppointments]);
 
   return {
     appointments,
