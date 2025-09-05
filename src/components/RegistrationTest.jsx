@@ -5,6 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/firebase';
 
 const RegistrationTest = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +15,7 @@ const RegistrationTest = () => {
     email: '',
     password: '',
     fullName: '',
-    userType: 'patient' as 'patient' | 'doctor',
+    userType: 'patient',
     idNumber: '',
     medicalAid: '',
     licenseNumber: '',
@@ -32,59 +35,55 @@ const RegistrationTest = () => {
     setLoading(true);
 
     try {
-      console.log('Starting test registration...');
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
 
-      const { data, error } = await supabase.auth.signUp({ // change this to firebase
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            user_type: formData.userType,
-            full_name: formData.fullName,
-            specialty_category: formData.userType === 'doctor' ? formData.specialty : undefined,
-            license_number: formData.userType === 'doctor' ? formData.licenseNumber : undefined,
-            practice_name: formData.userType === 'doctor' ? formData.practiceName : undefined,
-            id_number: formData.userType === 'patient' ? formData.idNumber : undefined,
-            medical_aid: formData.userType === 'patient' ? formData.medicalAid : undefined,
-          }
-        }
-      });
+      await updateProfile(user, { displayName: formData.fullName });
 
-      if (error) {
-        console.error('Registration error:', error);
-        toast.error('Registration failed: ' + error.message);
+      const profileData = {
+        user_type: formData.userType,
+        full_name: formData.fullName,
+      };
+
+      if (formData.userType === 'doctor') {
+        profileData.license_number = formData.licenseNumber;
+        profileData.practice_name = formData.practiceName;
+        profileData.specialty = formData.specialty;
       } else {
-        console.log('Registration successful:', data);
-        toast.success('Registration successful! Check console for details.');
-        
-        // Clear form
-        setFormData({
-          email: '',
-          password: '',
-          fullName: '',
-          userType: 'patient',
-          idNumber: '',
-          medicalAid: '',
-          licenseNumber: '',
-          practiceName: '',
-          specialty: 'general',
-          bloodType: '',
-          emergencyContact: '',
-          emergencyPhone: ''
-        });
+        profileData.id_number = formData.idNumber;
+        profileData.medical_aid = formData.medicalAid;
+        profileData.blood_type = formData.bloodType;
+        profileData.emergency_contact = formData.emergencyContact;
+        profileData.emergency_phone = formData.emergencyPhone;
       }
+
+      await setDoc(doc(db, 'profiles', user.uid), profileData);
+
+      toast.success('Registration successful!');
+
+      setFormData({
+        email: '',
+        password: '',
+        fullName: '',
+        userType: 'patient',
+        idNumber: '',
+        medicalAid: '',
+        licenseNumber: '',
+        practiceName: '',
+        specialty: 'general',
+        bloodType: '',
+        emergencyContact: '',
+        emergencyPhone: ''
+      });
     } catch (error) {
-      console.error('Unexpected error:', error);
-      toast.error('An unexpected error occurred');
+      console.error('Registration error:', error);
+      toast.error('Registration failed: ' + (error.message || error));
     } finally {
       setLoading(false);
     }
   };
 
-  // Only show in development
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
+  if (process.env.NODE_ENV !== 'development') return null;
 
   return (
     <Card className="fixed top-4 right-4 w-96 z-50">
@@ -98,35 +97,35 @@ const RegistrationTest = () => {
             id="email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="test@example.com"
           />
         </div>
-        
+
         <div>
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
             type="password"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             placeholder="password123"
           />
         </div>
-        
+
         <div>
           <Label htmlFor="fullName">Full Name</Label>
           <Input
             id="fullName"
             value={formData.fullName}
-            onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
             placeholder="John Doe"
           />
         </div>
-        
+
         <div>
           <Label htmlFor="userType">User Type</Label>
-          <Select value={formData.userType} onValueChange={(value: 'patient' | 'doctor') => setFormData({...formData, userType: value})}>
+          <Select value={formData.userType} onValueChange={(value) => setFormData({ ...formData, userType: value })}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -136,7 +135,7 @@ const RegistrationTest = () => {
             </SelectContent>
           </Select>
         </div>
-        
+
         {formData.userType === 'patient' && (
           <>
             <div>
@@ -144,7 +143,7 @@ const RegistrationTest = () => {
               <Input
                 id="idNumber"
                 value={formData.idNumber}
-                onChange={(e) => setFormData({...formData, idNumber: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                 placeholder="123456789"
               />
             </div>
@@ -153,7 +152,7 @@ const RegistrationTest = () => {
               <Input
                 id="medicalAid"
                 value={formData.medicalAid}
-                onChange={(e) => setFormData({...formData, medicalAid: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, medicalAid: e.target.value })}
                 placeholder="HealthPlus Insurance"
               />
             </div>
@@ -162,7 +161,7 @@ const RegistrationTest = () => {
               <Input
                 id="bloodType"
                 value={formData.bloodType}
-                onChange={(e) => setFormData({...formData, bloodType: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, bloodType: e.target.value })}
                 placeholder="A+"
               />
             </div>
@@ -171,7 +170,7 @@ const RegistrationTest = () => {
               <Input
                 id="emergencyContact"
                 value={formData.emergencyContact}
-                onChange={(e) => setFormData({...formData, emergencyContact: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
                 placeholder="Jane Doe"
               />
             </div>
@@ -180,13 +179,13 @@ const RegistrationTest = () => {
               <Input
                 id="emergencyPhone"
                 value={formData.emergencyPhone}
-                onChange={(e) => setFormData({...formData, emergencyPhone: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, emergencyPhone: e.target.value })}
                 placeholder="555-0123"
               />
             </div>
           </>
         )}
-        
+
         {formData.userType === 'doctor' && (
           <>
             <div>
@@ -194,7 +193,7 @@ const RegistrationTest = () => {
               <Input
                 id="licenseNumber"
                 value={formData.licenseNumber}
-                onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
                 placeholder="MD123456"
               />
             </div>
@@ -203,13 +202,13 @@ const RegistrationTest = () => {
               <Input
                 id="practiceName"
                 value={formData.practiceName}
-                onChange={(e) => setFormData({...formData, practiceName: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, practiceName: e.target.value })}
                 placeholder="City Medical Center"
               />
             </div>
             <div>
               <Label htmlFor="specialty">Specialty</Label>
-              <Select value={formData.specialty} onValueChange={(value) => setFormData({...formData, specialty: value})}>
+              <Select value={formData.specialty} onValueChange={(value) => setFormData({ ...formData, specialty: value })}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -223,12 +222,8 @@ const RegistrationTest = () => {
             </div>
           </>
         )}
-        
-        <Button 
-          onClick={handleTestRegistration} 
-          disabled={loading}
-          className="w-full"
-        >
+
+        <Button onClick={handleTestRegistration} disabled={loading} className="w-full">
           {loading ? 'Registering...' : 'Test Registration'}
         </Button>
       </CardContent>

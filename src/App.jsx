@@ -24,6 +24,7 @@ import BloodCancerImmunityPage from "./pages/bloodCancerImmunity";
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
 import MedicalRecords from "./pages/MedicalRecords";
+import DoctorAppointments from "./pages/DoctorAppointments";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/teeth" element={<TeethAndMouth />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/appointments" element={<Appointments />} />
+            <Route path="/doctor_appointments" element={<DoctorAppointments />} />
             <Route path="/medical-records" element={<MedicalRecords />} />
             {/* catch-all */}
             <Route path="*" element={<NotFound />} />

@@ -1,104 +1,125 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
-// import your Firebase client here
-// import { db } from './firebase';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc,
+  orderBy,
+} from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 export const useAppointments = () => {
+  const { user, profile } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user, profile } = useAuth();
 
-  const fetchAppointments = async () => {
-    if (!user || !profile) return;
+  const fetchAppointments = useCallback(async () => {
+    if (!user || !profile?.id) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      // TODO: Replace with Firebase query
-      // Example:
-      // let query = db.collection('appointments');
-      // if (profile.user_type === 'patient') query = query.where('patient_id', '==', profile.id);
-      // if (profile.user_type === 'doctor') query = query.where('doctor_id', '==', profile.id);
-      // const snapshot = await query.orderBy('appointment_date').get();
+      let q = collection(db, 'appointments');
 
-      const data = []; // Replace with transformed snapshot data from Firebase
+      // Only fetch appointments relevant to this user
+      if (profile.user_type === 'patient') {
+        q = query(q, where('patientId', '==', profile.id), orderBy('createdAt', 'desc'));
+      } else if (profile.user_type === 'doctor') {
+        q = query(q, where('doctorId', '==', profile.id), orderBy('createdAt', 'desc'));
+      }
 
-      const transformedAppointments = data.map((appointment) => ({
-        id: appointment.id,
-        appointment_date: appointment.appointment_date,
-        appointment_time: appointment.appointment_time,
-        status: appointment.status,
-        reason: appointment.reason || null,
-        notes: appointment.notes || null,
-        diagnosis: appointment.diagnosis || null,
-        prescription: appointment.prescription || null,
-        symptoms: appointment.symptoms || null,
-        created_at: appointment.created_at || null,
-        updated_at: appointment.updated_at || null,
-        patient_id: appointment.patient_id,
-        doctor_id: appointment.doctor_id,
-        patient_name: appointment.patient_name || null,
-        doctor_name: appointment.doctor_name || null,
-        specialty: appointment.specialty || null,
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
       }));
 
-      setAppointments(transformedAppointments);
+      setAppointments(data);
     } catch (err) {
       console.error('Error fetching appointments:', err);
       setError(err.message || 'Failed to fetch appointments');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, profile]);
 
-  const createAppointment = async (appointmentData) => {
-    try {
-      // TODO: Replace with Firebase insert
-      // await db.collection('appointments').add(appointmentData);
+  // Confirm appointment: move to confirmed_appointments with status
+  const confirmAppointment = useCallback(
+    async (appointmentId) => {
+      if (!user) return;
 
-      await fetchAppointments();
-    } catch (err) {
-      console.error('Error creating appointment:', err);
-      throw err;
-    }
-  };
+      try {
+        const docRef = doc(db, 'appointments', appointmentId);
+        const snapshot = await getDocs(query(collection(db, 'appointments')));
+        const appointment = snapshot.docs.find((d) => d.id === appointmentId)?.data();
 
-  const updateAppointment = async (id, updates) => {
-    try {
-      // TODO: Replace with Firebase update
-      // await db.collection('appointments').doc(id).update(updates);
+        if (!appointment) throw new Error('Appointment not found');
 
-      await fetchAppointments();
-    } catch (err) {
-      console.error('Error updating appointment:', err);
-      throw err;
-    }
-  };
+        // Move to confirmed_appointments
+        const confirmedRef = doc(db, 'confirmed_appointments', appointmentId);
+        await setDoc(confirmedRef, {
+          ...appointment,
+          status: 'confirmed',
+          confirmedAt: new Date().toISOString(),
+        });
 
-  const cancelAppointment = async (id) => {
-    return updateAppointment(id, { status: 'cancelled' });
-  };
+        // Remove from appointments collection
+        await deleteDoc(docRef);
 
-  const confirmAppointment = async (id) => {
-    return updateAppointment(id, { status: 'confirmed' });
-  };
+        await fetchAppointments();
+      } catch (err) {
+        console.error('Error confirming appointment:', err);
+        throw err;
+      }
+    },
+    [fetchAppointments, user]
+  );
 
-  const completeAppointment = async (id, diagnosis, prescription, notes) => {
-    return updateAppointment(id, {
-      status: 'completed',
-      diagnosis,
-      prescription,
-      notes,
-    });
-  };
+  // Cancel appointment: update status in appointments
+  const cancelAppointment = useCallback(
+    async (appointmentId) => {
+      if (!user) return;
+
+      try {
+        const docRef = doc(db, 'appointments', appointmentId);
+        await setDoc(
+          docRef,
+          { status: 'cancelled', cancelledAt: new Date().toISOString() },
+          { merge: true }
+        );
+
+        await fetchAppointments();
+      } catch (err) {
+        console.error('Error cancelling appointment:', err);
+        throw err;
+      }
+    },
+    [fetchAppointments, user]
+  );
+
+  const createAppointment = useCallback(
+    async (appointmentData) => {
+      try {
+        const docRef = doc(collection(db, 'appointments'));
+        await setDoc(docRef, { ...appointmentData, status: 'pending', createdAt: new Date().toISOString() });
+        await fetchAppointments();
+      } catch (err) {
+        console.error('Error creating appointment:', err);
+        throw err;
+      }
+    },
+    [fetchAppointments]
+  );
 
   useEffect(() => {
-    if (user && profile) {
-      fetchAppointments();
-    }
-  }, [user, profile]);
+    if (user && profile) fetchAppointments();
+  }, [user, profile, fetchAppointments]);
 
   return {
     appointments,
@@ -106,9 +127,7 @@ export const useAppointments = () => {
     error,
     refetch: fetchAppointments,
     createAppointment,
-    updateAppointment,
-    cancelAppointment,
     confirmAppointment,
-    completeAppointment,
+    cancelAppointment,
   };
 };

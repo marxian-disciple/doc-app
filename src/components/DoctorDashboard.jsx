@@ -110,7 +110,7 @@ const DoctorDashboard = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer"
-                onClick={() => navigate('/appointments')}>
+                onClick={() => navigate('/doctor_appointments')}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
