@@ -17,7 +17,10 @@ const RegistrationTest = () => {
     medicalAid: '',
     licenseNumber: '',
     practiceName: '',
-    specialty: 'general'
+    specialty: 'general',
+    bloodType: '',
+    emergencyContact: '',
+    emergencyPhone: ''
   });
 
   const handleTestRegistration = async () => {
@@ -64,7 +67,10 @@ const RegistrationTest = () => {
           medicalAid: '',
           licenseNumber: '',
           practiceName: '',
-          specialty: 'general'
+          specialty: 'general',
+          bloodType: '',
+          emergencyContact: '',
+          emergencyPhone: ''
         });
       }
     } catch (error) {
@@ -149,6 +155,33 @@ const RegistrationTest = () => {
                 value={formData.medicalAid}
                 onChange={(e) => setFormData({...formData, medicalAid: e.target.value})}
                 placeholder="HealthPlus Insurance"
+              />
+            </div>
+            <div>
+              <Label htmlFor="bloodType">Blood Type</Label>
+              <Input
+                id="bloodType"
+                value={formData.bloodType}
+                onChange={(e) => setFormData({...formData, bloodType: e.target.value})}
+                placeholder="A+"
+              />
+            </div>
+            <div>
+              <Label htmlFor="emergencyContact">Emergency Contact</Label>
+              <Input
+                id="emergencyContact"
+                value={formData.emergencyContact}
+                onChange={(e) => setFormData({...formData, emergencyContact: e.target.value})}
+                placeholder="Jane Doe"
+              />
+            </div>
+            <div>
+              <Label htmlFor="emergencyPhone">Emergency Phone</Label>
+              <Input
+                id="emergencyPhone"
+                value={formData.emergencyPhone}
+                onChange={(e) => setFormData({...formData, emergencyPhone: e.target.value})}
+                placeholder="555-0123"
               />
             </div>
           </>
