@@ -154,4 +154,4 @@ const MedicalCategories = () => {
 };
 
 export default MedicalCategories;
-//export { medicalCategories };
+export { medicalCategories };
