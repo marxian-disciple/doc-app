@@ -121,7 +121,7 @@ const DoctorDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">View Calendar</Button>
+              <Button className="w-full">View Appointments</Button>
             </CardContent>
           </Card>
 
@@ -142,7 +142,7 @@ const DoctorDashboard = () => {
           </Card>
 
           <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer"
-                onClick={() => navigate('/doctors')}>
+                onClick={() => navigate('/patients')}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />

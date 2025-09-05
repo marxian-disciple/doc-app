@@ -1,13 +1,19 @@
-// Here the doctor will have the ability to create, view, update, and delete medical records for their patients.
-// Patients will only have the ability to view their own medical records.
-import { useEffect } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { User, FileText, CalendarCheck } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
-import { useMedicalRecords } from '../hooks/useMedicalRecords';
+// Doctors will use this page to view their patients' medical records.
+// Patients should not have access to this page.
+import { useEffect } from "react";
+import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { User, FileText, CalendarCheck } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
+import { useMedicalRecords } from "../hooks/useMedicalRecords";
 
 const PatientMedicalRecords = () => {
   const { user, profile, loading: authLoading } = useAuth();
@@ -15,9 +21,12 @@ const PatientMedicalRecords = () => {
     medicalRecords,
     loading: recordsLoading,
     error,
-    deleteMedicalRecord,
   } = useMedicalRecords();
+
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const patientId = searchParams.get("patientId");
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -35,31 +44,27 @@ const PatientMedicalRecords = () => {
   }
 
   if (!user) return <Navigate to="/" replace />;
-  if (profile?.user_type !== 'patient') return <Navigate to="/dashboard" replace />;
+  if (profile?.user_type !== "doctor")
+    return <Navigate to="/dashboard" replace />;
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteMedicalRecord(id);
-      toast.success('Medical record deleted successfully');
-    } catch {
-      toast.error('Failed to delete medical record');
-    }
-  };
+  const recordsForPatient = patientId
+    ? medicalRecords.filter((rec) => rec.patientId === patientId)
+    : [];
 
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">My Medical Records</h1>
-        <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+        <h1 className="text-3xl font-bold">Patient Medical Records</h1>
+        <Button variant="secondary" onClick={() => navigate("/dashboard")}>
           <User className="mr-2" />
           Back to Dashboard
         </Button>
       </div>
 
-      {medicalRecords.length === 0 ? (
+      {recordsForPatient.length === 0 ? (
         <p className="text-center text-gray-500">No medical records found.</p>
       ) : (
-        medicalRecords.map((record) => (
+        recordsForPatient.map((record) => (
           <Card key={record.id} className="mb-4">
             <CardHeader>
               <CardTitle className="flex items-center">
